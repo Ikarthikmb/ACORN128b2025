@@ -2,7 +2,7 @@ module state_update128(
 	input clk, rst,
 	input ca_in, cb_in,
 	input [292:0] state_io,
-	input mbit_in,
+	input [1791:0] mbit_in,
 	output [292:0] sup128_out
 );
 	wire ks_out, fout;

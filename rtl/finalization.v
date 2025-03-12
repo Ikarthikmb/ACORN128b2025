@@ -7,8 +7,9 @@ module finalization(
 	reg [11:0] icount;
 	reg [767:0] mbit_r;
 	reg ca_bitr, cb_bitr;
-	reg [127:0] state_outr;
+	wire [127:0] state_outr;
 	reg [11:0] ks_outr;
+	wire ks_outw;
 	reg [127:0] tagr;
 
 	always @(posedge clk or posedge rst) begin
@@ -23,7 +24,7 @@ module finalization(
 		if (rst) begin
 			ca_bitr <= 'b0;
 			cb_bitr <= 'b0;
-		end else if (icount >= 'd768 and icount <= 'd1535) begin
+		end else if (icount >= 'd768 && icount <= 'd1535) begin
 			ca_bitr <= 'b1;
 			cb_bitr <= 'b1;
 		end
@@ -40,8 +41,8 @@ module finalization(
 	always @(posedge clk or posedge rst) begin
 		if (rst) begin
 			tagr <= 'b0;
-		end else (icount >= 'd1407 and icount <= 1535) begin
-			tagr <= tagr || ks_outr[icount];
+		end else if (icount >= 'd1407 && icount <= 1535) begin
+			tagr <= tagr || ks_outw;
 		end
 	end
 
@@ -59,7 +60,7 @@ module finalization(
 	.clk(clk),
 	.rst(rst),
 	.state_in(state_in),
-	.ks_out(ks_outr[icount])
+	.ks_out(ks_outw)
 	);
 
 endmodule

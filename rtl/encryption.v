@@ -1,10 +1,10 @@
 module encryption(
 	input clk,
 	input rst,
-	input [127:0] state_in,
+	input [292:0] state_in,
 	input ca_in, 
 	input cb_in,
-	input reg [127:0] plaintext_in,
+	input [127:0] plaintext_in,
 	output ca_bito, 
 	output cb_bito,
 	output [127:0] cipher_out
@@ -17,11 +17,11 @@ module encryption(
 	always @(posedge clk or posedge rst) begin
 		if (rst) begin
 			mbit_r <= 'b0;
-		end else if (icount >= 'd0 and icount < 'd128) begin
-			mbit_r[384+icount] <= plaintext[icount]
+		end else if (icount >= 'd0 && icount < 'd128) begin
+			mbit_r[384+icount] <= plaintext_in[icount];
 		end else if (icount == 'd128) begin
 			mbit_r[384+icount] <= 'b1;
-		end else if (icount >= 'd129 and icount <= 'd383) begin
+		end else if (icount >= 'd129 && icount <= 'd383) begin
 			mbit_r[384+icount] <= 'b0;
 		end
 	end
@@ -29,9 +29,9 @@ module encryption(
 	always @(posedge clk or posedge rst) begin
 		if (rst) begin
 			ca_bitr <= 'b0;
-		end else if (icount >= 'd384 and icount <= 'd639) begin
+		end else if (icount >= 'd384 && icount <= 'd639) begin
 			ca_bitr <= 'b1;
-		end else if (icount >= 'd640 and icount <= 'd767) begin
+		end else if (icount >= 'd640 && icount <= 'd767) begin
 			ca_bitr <= 'b0;
 		end
 	end
@@ -39,7 +39,7 @@ module encryption(
 	always @(posedge clk or posedge rst) begin
 		if (rst) begin
 			cb_bitr <= 'b0;
-		end else if (icount >= 'd384 and icount <= 'd767) begin
+		end else if (icount >= 'd384 && icount <= 'd767) begin
 			cb_bitr <= 'b0;
 		end else begin
 			cb_bitr <= 'b0;
@@ -49,7 +49,7 @@ module encryption(
 	always @(posedge clk or posedge rst) begin
 		if (rst) begin
 			cb_bitr <= 'b0;
-		end else if (icount >= 384 and icount <= 767) begin
+		end else if (icount >= 384 && icount <= 767) begin
 			cb_bitr <= 'b0;
 		end
 	end
@@ -65,8 +65,8 @@ module encryption(
 	always @(posedge clk or posedge rst) begin
 		if (rst) begin
 			cipher_r <= 'b0;
-		end else if (icount <= 'd384 and icount <= 'd767) begin
-			cipher_r['d384 - icount] <= plaintext['d384 - icount] ^  ks_out;
+		end else if (icount <= 'd384 && icount <= 'd767) begin
+			cipher_r['d384 - icount] <= plaintext_in['d384 - icount] ^  ks_out;
 		end
 	end
 
