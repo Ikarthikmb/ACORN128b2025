@@ -1,8 +1,6 @@
 module ch_fn(
 	input x, y, z,
-	output reg ch_out
+	output ch_out
 );
-	initial begin
-		ch_out = (x & y) ^ (~x & z);
-	end
+	assign ch_out = (x & y) ^ (~x & z);
 endmodule
