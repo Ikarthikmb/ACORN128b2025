@@ -6,6 +6,7 @@ module associated_process(
 	output cb_bit,
 	output [292:0] state_out
 );
+	reg [292:0] state_r;
 	wire [292:0] state_outr;
 	reg [11:0] icount;
 	reg [127:0] ad;
@@ -56,12 +57,20 @@ module associated_process(
 		end
 	end
 
+	always @(posedge clk or negedge rst) begin
+		if (rst) begin
+			state_r <= 'b0;
+		end else begin
+			state_r <= state_outr;
+		end
+	end
+
 	state_update128 STATE_UPDATE128(
 	.clk(clk),
 	.rst(rst),
 	.ca_in(ca_in),
 	.cb_in(cb_in),
-	.state_io(state_in),
+	.state_io(state_r),
 	.mbit_in(mbit_r),
 	.sup128_out(state_outr)
 	);

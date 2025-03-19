@@ -57,8 +57,6 @@ module finalization(
 	);
 
 	ksg128 KSG128(
-	.clk(clk),
-	.rst(rst),
 	.state_in(state_in),
 	.ks_out(ks_outw)
 	);

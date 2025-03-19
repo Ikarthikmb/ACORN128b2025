@@ -10,7 +10,7 @@ module encryption(
 	output [127:0] cipher_out
 );
 	reg [767:0] mbit_r;
-	reg [127:0] cipher_r;
+	logic [127:0] cipher_r;
 	reg ca_bitr, cb_bitr;
 	reg [11:0] icount;
 
@@ -81,8 +81,6 @@ module encryption(
 	);
 
 	ksg128 KSG128(
-	.clk(clk),
-	.rst(rst),
 	.state_in(state_in),
 	.ks_out(ks_out)
 	);

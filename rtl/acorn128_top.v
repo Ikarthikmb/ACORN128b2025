@@ -1,3 +1,5 @@
+`define DEBUG
+
 module acorn128_top(
     input clk,
     input rst,
@@ -14,6 +16,11 @@ module acorn128_top(
     output [127:0] tag_out,
     output ready_out
 );
+
+    wire [292:0] state_iw;
+	wire [1791:0] mbit_iw;
+	wire ca_iw, cb_iw;
+	reg  pinitial_r;
 
     wire [292:0] state_w;
     reg [127:0] keystream_r;
@@ -35,54 +42,48 @@ module acorn128_top(
     always @(posedge clk or posedge rst) begin
         if (rst) begin
             keystream_r 	<= 128'b0;
+			pinitial_r 		<= 'b0;
             auth_tag_r 		<= 128'b0;
-            // ciphertext_r 	<= 128'b0;
             plaintext_r 	<= 128'b0;
-            // tag 			<= 128'b0;
-            phase_r 		<= INITIALIZATION_P;
             counter_r 		<= 'd1792;
             ready_r 		<= 'b0;
-			// $display("Reset process complete");
+            phase_r 		<= INITIALIZATION_P;
         end else if (start_in) begin
             case (phase_r)
                 INITIALIZATION_P: begin
-					if (counter_r > 0) begin 
+					if (~encrypt_in) begin
+						phase_r <= INITIALIZATION_P;
+					end else if (counter_r > 0) begin 
+						pinitial_r <= 'b1;
 						counter_r <= counter_r - 1;
-						// $write("%0d ", counter_r);
+						// ddisplay($sformatf("Initialization counter: ", counter_r));
 					end else if (counter_r <= 'd1) begin
 						phase_r <= PROCESSING_P;
 						counter_r <= 'd383;
-						// $display("End of Initialiazation");
-						// $display("Start of Porcessing");
+						pinitial_r <= 'b0;
 					end
                 end
                 PROCESSING_P: begin
                     if (counter_r > 0) begin
                         counter_r <= counter_r - 1;
-						// $write("%0d ", counter_r);
                     end else if (counter_r <= 'd1) begin
                         phase_r <= ENCRYPTION_P;
                         counter_r <= 'd767;
-						// $display("Start of Encryption");
                     end
                 end
                 ENCRYPTION_P: begin
                     if (counter_r > 0) begin
                         counter_r <= counter_r - 1;
-						// $write("%0d ", counter_r);
                     end else if (counter_r <= 'b1) begin
                         phase_r <= FINAL_P;
                         counter_r <= 'd1535;
-						// $display("Start of Finalization");
                     end
                 end
                 FINAL_P: begin
                     if (counter_r > 0) begin
                         counter_r <= counter_r - 1;
-						// $write("%0d ", counter_r);
                     end else if (counter_r <= 'b1) begin
                         ready_r <= 1;
-						// $display("End of Finalization");
                     end
                 end
             endcase
@@ -94,10 +95,11 @@ module acorn128_top(
 	.rst(rst),
 	.key_in(key_in),
 	.iv_in(iv_in),
-	.state_out(state_w),
-	.mbit_out(mbit_w),
-	.ca_out(ca_w),
-	.cb_out(cb_w)
+	.pinitial(pinitial_r),
+	.state_out(state_iw),
+	.mbit_out(mbit_iw),
+	.ca_out(ca_iw),
+	.cb_out(cb_iw)
 	);
 
 	associated_process ASSOCIATED_P(
@@ -133,6 +135,12 @@ module acorn128_top(
     assign ciphertext_out = ciphertext_w;
     assign plaintext_out = plaintext_r;
 	assign tag_out = tag;
+
+	task ddisplay(string str);
+		`ifdef DEBUG
+			$display("DEBUG: %s",str);
+		`endif
+	endtask
 
 endmodule
 
