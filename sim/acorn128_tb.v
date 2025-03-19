@@ -39,8 +39,11 @@ module acorn128_tb();
     initial begin
         clk = 0;
         rst = 1;
+        encrypt_in = 0;
+        $display("Ciphertext: %h", ciphertext_r);
         #10 rst = 0;
         start_in = 0;
+        encrypt_in = 1;
 		
 		/*
 		// Case 1
@@ -57,6 +60,16 @@ module acorn128_tb();
         plaintext_in = 128'h66666666666666666666666666666666;
         associated_data_in = 128'hFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
         data_length_in = 64'd128;
+
+		/*
+		// Case 3
+        key_in = {16{8'b00000001}};
+        iv_in = {16{8'b00000001}};
+        plaintext_in = {16{8'b00000001}};
+        associated_data_in = {16{8'b00000001}};
+        data_length_in = 64'd128;
+		*/
+
 		$display("STARTING ENCRYPTION...");
 		$display("Key: %h", key_in);
 		$display("IV: %h", iv_in);
@@ -76,16 +89,24 @@ module acorn128_tb();
 		#20 rst = 0;
         encrypt_in = 0;
         start_in = 1;
+
+		/*
 		$display("\nSTARTING DECRYPTION...");
         
         wait (ready_out);
 		$display("DECRYPTION READY");
         
         $display("Decrypted Plaintext: %h", plaintext_out);
+		*/
         
         
         #100 $finish;
     end
+
+	initial begin
+		$dumpfile("acorn128_tb.vcd");
+		$dumpvars(0, acorn128_tb);
+	end
 
 endmodule
 
