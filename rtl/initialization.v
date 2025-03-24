@@ -21,7 +21,7 @@ module initialization(
 		if (rst) begin
 			icount <= 'b0;
 			mbit_r <= 'b0;
-		end else if (icount <= 'd127) begin
+		end else if (icount >= 'd0 && icount <= 'd127) begin
 			mbit_r[icount] <= key_in[icount];
 		end else if (icount > 'd127 && icount <= 'd255) begin
 			mbit_r[icount] <= key_in[icount - 'd128];
@@ -29,11 +29,13 @@ module initialization(
 			mbit_r[icount] <= key_in[0] ^ 1;
 		end else if (icount > 'd256 && icount <= 'd1535) begin
 			mbit_r[icount] <= key_in[(icount - 'd256) % 'd128];
+		end else begin
+			mbit_r[icount] <= 'b0;
 		end
 	end
 
 	always @(posedge clk or negedge rst) begin
-		if (rst) begin
+		if (rst | icount == 'd1793) begin
 			icount <= 'b0;
 		end else begin
 			icount <= icount + 1'b1;

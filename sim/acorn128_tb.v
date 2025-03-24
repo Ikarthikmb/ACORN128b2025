@@ -70,6 +70,7 @@ module acorn128_tb();
         data_length_in = 64'd128;
 		*/
 
+		$display("----- ----- ----- ----- -----");
 		$display("STARTING ENCRYPTION...");
 		$display("Key: %h", key_in);
 		$display("IV: %h", iv_in);
@@ -78,6 +79,7 @@ module acorn128_tb();
         #10 start_in = 1;
         
         wait (ready_out);
+		$display("----- ----- ----- ----- -----");
 		$display("ENCRYPTION READY");
         
         ciphertext_r = ciphertext_out;

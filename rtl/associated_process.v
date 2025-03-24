@@ -1,7 +1,7 @@
 module associated_process(
 	input clk, rst,
 	input [292:0] state_in,
-	output [382:0] mbit_out,
+	output [1791:0] mbit_out,
 	output ca_bit,
 	output cb_bit,
 	output [292:0] state_out
@@ -10,7 +10,7 @@ module associated_process(
 	wire [292:0] state_outr;
 	reg [11:0] icount;
 	reg [127:0] ad;
-	reg [382:0] mbit_r;
+	reg [1791:0] mbit_r;
 	reg ca_bitr, cb_bitr;
 
 	// phase 1: m[adlen-1:0] = ad[i:0]
@@ -71,7 +71,7 @@ module associated_process(
 	.ca_in(ca_in),
 	.cb_in(cb_in),
 	.state_io(state_r),
-	.mbit_in(mbit_r),
+	.mbit_in(mbit_r[icount]),
 	.sup128_out(state_outr)
 	);
 

@@ -1,13 +1,13 @@
 module finalization(
 	input clk,
 	input rst,
-	input [127:0] state_in,
+	input [292:0] state_in,
 	output [127:0] tag
 );
 	reg [11:0] icount;
 	reg [767:0] mbit_r;
 	reg ca_bitr, cb_bitr;
-	wire [127:0] state_outr;
+	wire [292:0] state_outr;
 	reg [11:0] ks_outr;
 	wire ks_outw;
 	reg [127:0] tagr;
@@ -52,7 +52,7 @@ module finalization(
 	.ca_in(ca_bitr),
 	.cb_in(cb_bitr),
 	.state_io(state_in),
-	.mbit_in(mbit_r),
+	.mbit_in(mbit_r[icount]),
 	.sup128_out(state_outr)
 	);
 

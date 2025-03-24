@@ -13,6 +13,7 @@ module encryption(
 	logic [127:0] cipher_r;
 	reg ca_bitr, cb_bitr;
 	reg [11:0] icount;
+	reg [292:0] state_outr;
 
 	always @(posedge clk or posedge rst) begin
 		if (rst) begin
@@ -76,7 +77,7 @@ module encryption(
 	.ca_in(ca_bitr),
 	.cb_in(cb_bitr),
 	.state_io(state_in),
-	.mbit_in(mbit_r),
+	.mbit_in(mbit_r[icount]),
 	.sup128_out(state_outr)
 	);
 
