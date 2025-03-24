@@ -61,4 +61,6 @@ module finalization(
 	.ks_out(ks_outw)
 	);
 
+	assign tag = tagr;
+
 endmodule

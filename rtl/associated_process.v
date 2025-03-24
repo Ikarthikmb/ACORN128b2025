@@ -1,26 +1,21 @@
 module associated_process(
 	input clk, rst,
+	input start_ppi,
 	input [292:0] state_in,
-	output [1791:0] mbit_out,
-	output ca_bit,
-	output cb_bit,
+	input [127:0] ad_in,
 	output [292:0] state_out
 );
 	reg [292:0] state_r;
 	wire [292:0] state_outr;
 	reg [11:0] icount;
-	reg [127:0] ad;
 	reg [1791:0] mbit_r;
-	reg ca_bitr, cb_bitr;
+	reg ca_ar, cb_ar;
 
-	// phase 1: m[adlen-1:0] = ad[i:0]
-	// phase 2: m[adlen] = 1
-	// phase 3: m[adlen+255: adlen+i] = 0 
 	always @(posedge clk or negedge rst) begin
 		if (rst) begin
 			mbit_r <= 'b0;
 		end else if (icount < 'd128) begin
-			mbit_r[icount] <= ad[icount];
+			mbit_r[icount] <= ad_in[icount];
 		end else if (icount == 'd128) begin
 			mbit_r[icount] <= 'b1;
 		end else if (icount > 'd128 & icount <= 'd255) begin
@@ -28,32 +23,36 @@ module associated_process(
 		end
 	end
 
-	// C-bit Phase 1: ca[adlen+127:0] = 1
-	// C-bit Phase 2: ca[adlen+255:adlen_128] = 1
 	always @(posedge clk or negedge rst) begin
 		if (rst) begin
-			ca_bitr <= 'b0;
+			ca_ar <= 'b0;
 		end else if (icount <= 'd127) begin
-			ca_bitr <= 'b1;
+			ca_ar <= 'b1;
 		end else if (icount > 'd127 & icount <= 'd255) begin
-			ca_bitr <= 'b0;
+			ca_ar <= 'b0;
 		end
 	end
 
-	// C-bit Phase 1: cb[adlen+255:0] = 1
 	always @(posedge clk or negedge rst) begin
 		if (rst) begin
-			cb_bitr <= 'b0;
+			cb_ar <= 'b0;
 		end else if (icount <= 'd255) begin
-			cb_bitr <= 'b1;
+			cb_ar <= 'b1;
 		end
 	end
 
+	always @(posedge start_ppi) begin
+		icount <= 'd0;
+		state_r <= state_in;
+	end
+
 	always @(posedge clk or negedge rst) begin
-		if (rst) begin
+		if (rst | icount == 'd1793) begin
 			icount <= 'b0;
-		end else begin
+		end else if (start_ppi) begin
 			icount <= icount + 1'b1;
+		end else begin
+			icount <= 'b0;
 		end
 	end
 
@@ -75,9 +74,6 @@ module associated_process(
 	.sup128_out(state_outr)
 	);
 
-	assign state_out = state_outr;
-	assign ca_bit = ca_bitr;
-	assign cb_bit = cb_bitr;
-	assign mbit_out = mbit_r;
+	assign state_out = state_r;
 
 endmodule
