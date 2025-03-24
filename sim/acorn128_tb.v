@@ -36,14 +36,25 @@ module acorn128_tb();
 
     always #5 clk = ~clk;
 
+	// Pre setup
+	initial begin
+		clk <= 'b0;
+		rst <= 'b1;
+		start_in <= 'b0;
+		encrypt_in <= 'b0;
+		key_in <= 'b0;
+		iv_in <= 'b0;
+		plaintext_in <= 'b0;
+		ciphertext_in <= 'b0;
+		associated_data_in <= 'b0;
+		data_length_in <= 'b0;
+	end
+
     initial begin
-        clk = 0;
-        rst = 1;
-        encrypt_in = 0;
-        $display("Ciphertext: %h", ciphertext_r);
-        #10 rst = 0;
-        start_in = 0;
-        encrypt_in = 1;
+		#5 rst <= 0;
+		#10;
+        start_in <= 1;
+        encrypt_in <= 1;
 		
 		/*
 		// Case 1
@@ -55,11 +66,11 @@ module acorn128_tb();
 		*/
 
 		// Case 2
-        key_in = 128'hEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE;
-        iv_in = 128'hFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
-        plaintext_in = 128'h66666666666666666666666666666666;
-        associated_data_in = 128'hFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
-        data_length_in = 64'd128;
+        key_in <= 128'hEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE;
+        iv_in <= 128'hFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+        plaintext_in <= 128'h66666666666666666666666666666666;
+        associated_data_in <= 128'hFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+        data_length_in <= 64'd128;
 
 		/*
 		// Case 3
@@ -70,13 +81,15 @@ module acorn128_tb();
         data_length_in = 64'd128;
 		*/
 
+		#10; 
 		$display("----- ----- ----- ----- -----");
 		$display("STARTING ENCRYPTION...");
 		$display("Key: %h", key_in);
 		$display("IV: %h", iv_in);
 		$display("Plaintext: %h", plaintext_in);
+		$display("Associated Data: %h", associated_data_in);
 
-        #10 start_in = 1;
+        #10 // start_in = 1;
         
         wait (ready_out);
 		$display("----- ----- ----- ----- -----");
@@ -87,10 +100,9 @@ module acorn128_tb();
         $display("Ciphertext: %h", ciphertext_r);
         $display("Tag: %h", tag_out);
         
-		rst = 1;
-		#20 rst = 0;
-        encrypt_in = 0;
-        start_in = 1;
+		#20 rst <= 1;
+        encrypt_in <= 0;
+        start_in <= 1;
 
 		/*
 		$display("\nSTARTING DECRYPTION...");
