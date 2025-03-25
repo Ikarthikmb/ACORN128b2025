@@ -17,19 +17,21 @@ module acorn128_top(
     output ready_out
 );
 
-    wire [292:0] state_iw;
-    wire [292:0] state_aw;
+	reg  start_epr;
 	reg  start_ipr;
 	reg  start_ppr;
-	reg  start_epr;
-
-    reg [127:0] keystream_r;
-    reg [7:0] phase_r;
-    reg [63:0] counter_r;
 	reg ready_r;
-    wire [127:0] ciphertext_w;
+    reg [127:0] keystream_r;
     reg [127:0] plaintext_r;
+    reg [63:0] counter_r;
+    reg [7:0] phase_r;
+
+    wire [127:0] ciphertext_w;
     wire [127:0] tag;
+    wire [292:0] state_aw;
+    wire [292:0] state_iw;
+	wire [1791:0] mbit_iow;
+	wire [1791:0] mbit_aow;
 
     localparam WAITING_P		= 'd0;
     localparam INITIALIZATION_P	= 'd1;
@@ -104,6 +106,7 @@ module acorn128_top(
 		.start_ipi(start_ipr),
 		.key_in(key_in),
 		.iv_in(iv_in),
+		.mbit_out(mbit_iow),
 		.state_out(state_iw)
 	);
 
@@ -111,8 +114,10 @@ module acorn128_top(
 		.clk(clk),
 		.rst(rst),
 		.start_ppi(start_ppr),
+		.mbit_in(mbit_iow),
 		.state_in(state_iw),
 		.ad_in(associated_data_in),
+		.mbit_out(mbit_aow),
 		.state_out(state_aw)
 	);
 
@@ -120,8 +125,9 @@ module acorn128_top(
 		.clk(clk),
 		.rst(rst),
 		.start_epi(start_epr),
+		.mbit_in(mbit_aow),
 		.state_in(state_aw),
-		.plaintext_in(plaintext_r),
+		.plaintext_in(plaintext_in),
 		.cipher_out(ciphertext_w)
 	);
 
@@ -134,7 +140,6 @@ module acorn128_top(
 
 	assign ready_out = ready_r;
     assign ciphertext_out = ciphertext_w;
-    assign plaintext_out = plaintext_r;
 	assign tag_out = tag;
 
 	task ddisplay(string str);

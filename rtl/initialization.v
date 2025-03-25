@@ -7,12 +7,14 @@ module initialization(
 	input start_ipi,
 	input [127:0] key_in,
 	input [127:0] iv_in,
+	output [1791:0] mbit_out,
 	output [292:0] state_out
 );
-	reg [1791:0] mbit_r;
-	reg [292:0] state_r;
-	wire [292:0] state_ur;
 	reg [11:0] icount;
+	reg [1791:0] mbit_r;
+	reg [292:0] state_pstr;
+
+	wire [292:0] state_nxtw;
 	wire mbit_sw;
 
 	always @(posedge clk or posedge rst) begin
@@ -35,10 +37,10 @@ module initialization(
 	always @(posedge clk or posedge rst) begin
 		if (rst | icount == 'd0) begin
 			icount <= 'd1792;
-			state_r <= 'b0;
+			state_pstr <= 'b0;
 		end else if (start_ipi) begin
 			icount <= icount - 1'b1;
-			state_r <= state_ur;
+			state_pstr <= state_nxtw;
 		end else begin
 			icount <= 'b0;
 			mbit_r <= 'b0;
@@ -47,7 +49,7 @@ module initialization(
 
 	always @(posedge start_ipi) begin
 		icount <= 'b0;
-		state_r <= 'b0;
+		state_pstr <= 'b0;
 	end
 
 	state_update128 STATEUPDATE128(
@@ -55,13 +57,13 @@ module initialization(
 		.rst(rst),
 		.ca_in(1'b1),
 		.cb_in(1'b1),
-		.state_io(state_r),
-		.mbit_in(mbit_r[icount]),
-		.sup128_out(state_ur)
+		.state_io(state_pstr),
+		.mbit_in(mbit_sw),
+		.sup128_out(state_nxtw)
 	);
 
-	assign state_out 	= state_r;
+	assign state_out 	= state_pstr;
 	assign mbit_out 	= mbit_r;
-	// assign mbit_sw 	= (icount > 'b0) ? mbit_r[icount] : mbit_r[icount];
+	assign mbit_sw 	= ( (icount > 1'b0) & (icount < 'd1792) ) ? mbit_r[icount+1'b1] : 1'b0;
 
 endmodule
