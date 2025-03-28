@@ -65,12 +65,21 @@ module acorn128_tb();
         data_length = 64'd128;
 		*/
 
-		// Case 2
+		// Case 2e Encryption
         key_in <= 128'hEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE;
         iv_in <= 128'hFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
         plaintext_in <= 128'h66666666666666666666666666666666;
         associated_data_in <= 128'hFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
         data_length_in <= 64'd128;
+
+		/*
+		// Case 2d Decrytion
+        key_in <= 128'hEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE;
+        iv_in <= 128'hFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+        plaintext_in <= 128'h11f7ed18e2086ebd568c90e11e57bb47;
+        associated_data_in <= 128'hFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+        data_length_in <= 64'd128;
+		*/
 
 		/*
 		// Case 3

@@ -5,33 +5,35 @@ module acorn128_top(
     input rst,
     input start_in,
     input encrypt_in,
-    input [127:0] key_in,
-    input [127:0] iv_in,
-    input [127:0] plaintext_in,
-    input [127:0] ciphertext_in,
-    input [127:0] associated_data_in,
-    input [63:0] data_length_in,
-    output [127:0] ciphertext_out,
-    output [127:0] plaintext_out,
-    output [127:0] tag_out,
+    input	[127:0]	key_in,
+    input	[127:0]	iv_in,
+    input	[127:0]	plaintext_in,
+    input	[127:0]	ciphertext_in,
+    input	[127:0]	associated_data_in,
+    input	[63:0]	data_length_in,
+    output	[127:0]	ciphertext_out,
+    output	[127:0]	plaintext_out,
+    output	[127:0]	tag_out,
     output ready_out
 );
 
-	reg  start_epr;
-	reg  start_ipr;
-	reg  start_ppr;
+	reg	start_ipr;
+	reg start_ppr;
+	reg start_epr;
+	reg	start_fpr;
 	reg ready_r;
-    reg [127:0] keystream_r;
-    reg [127:0] plaintext_r;
-    reg [63:0] counter_r;
-    reg [7:0] phase_r;
+    reg [127:0]	keystream_r;
+    reg [127:0]	plaintext_r;
+    reg [63:0]	counter_r;
+    reg [7:0]	phase_r;
 
-    wire [127:0] ciphertext_w;
-    wire [127:0] tag;
-    wire [292:0] state_aw;
-    wire [292:0] state_iw;
-	wire [1791:0] mbit_iow;
-	wire [1791:0] mbit_aow;
+    wire [127:0]	ciphertext_w;
+    wire [127:0]	tag;
+    wire [292:0]	state_aw;
+    wire [292:0]	state_iw;
+	wire [1791:0]	mbit_iow;
+	wire [1791:0]	mbit_aow;
+	wire [1791:0]	mbit_eow;
 
     localparam WAITING_P		= 'd0;
     localparam INITIALIZATION_P	= 'd1;
@@ -49,6 +51,7 @@ module acorn128_top(
 			start_ipr 		<= 'b0;
 			start_ppr 		<= 'b0;
 			start_epr 		<= 'b0;
+			start_fpr 		<= 'b0;
         end else if (start_in) begin
             case (phase_r)
 				WAITING_P: begin
@@ -87,12 +90,14 @@ module acorn128_top(
                         phase_r <= FINAL_P;
                         counter_r <= 'd1535;
 						start_epr <= 'b0;
+						start_fpr <= 'b1;
                     end
                 end
                 FINAL_P: begin
                     if (counter_r > 0) begin
                         counter_r <= counter_r - 1;
                     end else if (counter_r <= 'b1) begin
+						start_fpr <= 'b0;
                         ready_r <= 1;
                     end
                 end
@@ -128,12 +133,15 @@ module acorn128_top(
 		.mbit_in(mbit_aow),
 		.state_in(state_aw),
 		.plaintext_in(plaintext_in),
+		.mbit_out(mbit_eow),
 		.cipher_out(ciphertext_w)
 	);
 
 	finalization FINALIZATION_M(
 		.clk(clk),
 		.rst(rst),
+		.start_fpi(start_fpr),
+		.mbit_in(mbit_aow),
 		.state_in(state_aw),
 		.tag(tag)
 	);

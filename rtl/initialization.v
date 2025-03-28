@@ -5,10 +5,10 @@ module initialization(
 	input clk,
 	input rst,
 	input start_ipi,
-	input [127:0] key_in,
-	input [127:0] iv_in,
-	output [1791:0] mbit_out,
-	output [292:0] state_out
+	input	[127:0] key_in,
+	input	[127:0] iv_in,
+	output	[1791:0] mbit_out,
+	output	[292:0] state_out
 );
 	reg [11:0] icount;
 	reg [1791:0] mbit_r;
@@ -50,6 +50,7 @@ module initialization(
 	always @(posedge start_ipi) begin
 		icount <= 'b0;
 		state_pstr <= 'b0;
+		mbit_r <= 'b0;
 	end
 
 	state_update128 STATEUPDATE128(
@@ -64,6 +65,7 @@ module initialization(
 
 	assign state_out 	= state_pstr;
 	assign mbit_out 	= mbit_r;
-	assign mbit_sw 	= ( (icount > 1'b0) & (icount < 'd1792) ) ? mbit_r[icount+1'b1] : 1'b0;
+	// assign mbit_sw 	= ( (icount > 1'b0) & (icount < 'd1792) ) ? mbit_r[icount+1'b1] : 1'b0;
+	assign mbit_sw 	= (icount < 'd1792) ? mbit_r[icount] : 1'b0;
 
 endmodule

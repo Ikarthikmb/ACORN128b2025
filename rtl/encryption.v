@@ -2,26 +2,30 @@ module encryption(
 	input clk,
 	input rst,
 	input start_epi,
-	input [1791:0] mbit_in,
-	input [292:0] state_in,
-	input [127:0] plaintext_in,
-	output [127:0] cipher_out
+	input	[1791:0] mbit_in,
+	input	[292:0] state_in,
+	input	[127:0] plaintext_in,
+	output	[1791:0] mbit_out,
+	output	[127:0] cipher_out
 );
-	reg [1791:0] mbit_r;
-	reg [127:0] cipher_r;
-	reg ca_bitr, cb_bitr;
-	reg [11:0] icount;
+	reg	[11:0] icount;
+	reg	[127:0] cipher_r;
+	reg	[1791:0] mbit_r;
+	reg	[292:0] state_pstr;
+	reg ca_bitr;
+	reg cb_bitr;
+
 	wire [292:0] state_nxtw;
-	reg [292:0] state_pstr;
+	wire ks_out;
 
 	always @(posedge clk or posedge rst) begin
 		if (rst) begin
 			mbit_r <= 'b0;
-		end else if (icount >= 'd0 && icount < 'd128) begin
+		end else if (icount >= 'd0 & icount < 'd128) begin
 			mbit_r[384+icount] <= plaintext_in[icount];
 		end else if (icount == 'd128) begin
 			mbit_r[384+icount] <= 'b1;
-		end else if (icount >= 'd129 && icount <= 'd383) begin
+		end else if (icount >= 'd129 & icount <= 'd383) begin
 			mbit_r[384+icount] <= 'b0;
 		end
 	end
@@ -29,9 +33,9 @@ module encryption(
 	always @(posedge clk or posedge rst) begin
 		if (rst) begin
 			ca_bitr <= 'b0;
-		end else if (icount >= 'd384 && icount <= 'd639) begin
+		end else if (icount >= 'd384 & icount <= 'd639) begin
 			ca_bitr <= 'b1;
-		end else if (icount >= 'd640 && icount <= 'd767) begin
+		end else if (icount >= 'd640 & icount <= 'd767) begin
 			ca_bitr <= 'b0;
 		end
 	end
@@ -39,7 +43,7 @@ module encryption(
 	always @(posedge clk or posedge rst) begin
 		if (rst) begin
 			cb_bitr <= 'b0;
-		end else if (icount >= 'd384 && icount <= 'd767) begin
+		end else if (icount >= 'd384 & icount <= 'd767) begin
 			cb_bitr <= 'b0;
 		end else begin
 			cb_bitr <= 'b0;
@@ -49,7 +53,7 @@ module encryption(
 	always @(posedge clk or posedge rst) begin
 		if (rst) begin
 			cb_bitr <= 'b0;
-		end else if (icount >= 384 && icount <= 767) begin
+		end else if (icount >= 384 & icount <= 767) begin
 			cb_bitr <= 'b0;
 		end
 	end
@@ -98,4 +102,5 @@ module encryption(
 	);
 
 	assign cipher_out = cipher_r;
+	assign mbit_out = mbit_r;
 endmodule
