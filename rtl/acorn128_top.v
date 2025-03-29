@@ -98,7 +98,7 @@ module acorn128_top(
                         counter_r <= counter_r - 1;
                     end else if (counter_r <= 'b1) begin
 						start_fpr <= 'b0;
-                        ready_r <= 1;
+                        ready_r <= 'b1;
                     end
                 end
             endcase
