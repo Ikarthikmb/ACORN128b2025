@@ -1,0 +1,36 @@
+iverilog -o sim/tb.out -g2012 rtl/associated_process.v rtl/encryption.v rtl/finalization.v rtl/ksg128.v rtl/state_update128.v rtl/acorn128_top.v rtl/ch_fn.v rtl/fbk128.v rtl/initialization.v rtl/maj_fn.v sim/acorn128_tb.v 
+vvp sim/tb.out
+============================================================
+VCD info: dumpfile acorn128_tb.vcd opened for output.
+[INFO] Pre Setup Completed
+[INFO] STARTING ENCRYPTION
+[ECRP] Plain : 66666666666666666666666666666666
+[ECRP] Key   : eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+[ECRP] IV    : ffffffffffffffffffffffffffffffff
+[ECRP] AD    : ffffffffffffffffffffffffffffffff
+[ERROR] INITILIZATION INCOMPLETE
+[I-ERR] counter: 0
+[I-ERR] done_ipw: 0
+
+[INFO] ENCRYPTION READY
+[ECRP] Cipher: 54a6ac18b2092bbc1788d5a54a12bb07
+[ECRP] Tag   : 75323e246076e3e2428be182b5ef020b
+------------------------------------------------------------
+[INFO] Pre Setup Completed
+[INFO] STARTING DECRYPTION
+[ECRP] Cipher: 54a6ac18b2092bbc1788d5a54a12bb07
+[ECRP] Key   : eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+[ECRP] IV    : ffffffffffffffffffffffffffffffff
+[ECRP] AD    : ffffffffffffffffffffffffffffffff
+[ERROR] INITILIZATION INCOMPLETE
+[I-ERR] counter: 0
+[I-ERR] done_ipw: 0
+
+[INFO] DECRYPTION READY
+[DCRP] Plain : 1655c761ed2dc1de82dcbfb5ee666666
+[DCRP] Tag   : 75323e246076e3e2428be182b5ef020b
+
+[ERROR] Verification Failed
+[INFO] Expected Plaintext : 112520563455476861751931319939792812807
+[INFO] Decrypted Plaintext:  29688405098289764629243399904518628966
+============================================================
