@@ -21,6 +21,10 @@ module acorn128_top(
 	reg start_ppr;
 	reg start_epr;
 	reg	start_fpr;
+	wire done_ipw;
+	wire done_ppw;
+	wire done_epw;
+	wire done_fpw;
 	reg ready_r;
     reg [127:0]	keystream_r;
     reg [127:0]	plaintext_r;
@@ -31,9 +35,9 @@ module acorn128_top(
     wire [127:0]	tag;
     wire [292:0]	state_aw;
     wire [292:0]	state_iw;
-	wire [1791:0]	mbit_iow;
-	wire [1791:0]	mbit_aow;
-	wire [1791:0]	mbit_eow;
+	wire [1792:0]	mbit_iow;
+	wire [1792:0]	mbit_aow;
+	wire [1792:0]	mbit_eow;
 
     localparam WAITING_P		= 'd0;
     localparam INITIALIZATION_P	= 'd1;
@@ -57,6 +61,7 @@ module acorn128_top(
 				WAITING_P: begin
 					if (encrypt_in) begin
 						phase_r <= INITIALIZATION_P;
+						counter_r <= 'd1792;
 						start_ipr <= 'b1;
 					end else begin
 						phase_r <= WAITING_P;
@@ -71,6 +76,11 @@ module acorn128_top(
 						counter_r <= 'd383;
 						start_ipr <= 'b0;
 						start_ppr <= 'b1;
+						if (~done_ipw) begin
+							$display("[ERROR] INITILIZATION INCOMPLETE");
+							$display("[I-ERR] counter: %0d", counter_r);
+							$display("[I-ERR] done_ipw: %0b", done_ipw);
+						end
 					end
                 end
                 PROCESSING_P: begin
@@ -111,6 +121,7 @@ module acorn128_top(
 		.start_ipi(start_ipr),
 		.key_in(key_in),
 		.iv_in(iv_in),
+		.done_ipo(done_ipw),
 		.mbit_out(mbit_iow),
 		.state_out(state_iw)
 	);

@@ -2,15 +2,15 @@ module encryption(
 	input clk,
 	input rst,
 	input start_epi,
-	input	[1791:0] mbit_in,
+	input	[1792:0] mbit_in,
 	input	[292:0] state_in,
 	input	[127:0] plaintext_in,
-	output	[1791:0] mbit_out,
+	output	[1792:0] mbit_out,
 	output	[127:0] cipher_out
 );
 	reg	[11:0] icount;
 	reg	[127:0] cipher_r;
-	reg	[1791:0] mbit_r;
+	reg	[1792:0] mbit_r;
 	reg	[292:0] state_pstr;
 	reg ca_bitr;
 	reg cb_bitr;

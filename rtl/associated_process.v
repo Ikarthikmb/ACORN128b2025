@@ -1,14 +1,14 @@
 module associated_process(
 	input clk, rst,
 	input start_ppi,
-	input	[1791:0] mbit_in,
+	input	[1792:0] mbit_in,
 	input	[292:0] state_in,
 	input	[127:0] ad_in,
-	output	[1791:0] mbit_out,
+	output	[1792:0] mbit_out,
 	output	[292:0] state_out
 );
 	reg [11:0] icount;
-	reg [1791:0] mbit_r;
+	reg [1792:0] mbit_r;
 	reg [292:0] state_pstr;
 	reg ca_ar;
 	reg cb_ar;

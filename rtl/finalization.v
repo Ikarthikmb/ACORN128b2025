@@ -3,11 +3,11 @@ module finalization(
 	input rst,
 	input start_fpi,
 	input [292:0] state_in,
-	input [1791:0] mbit_in,
+	input [1792:0] mbit_in,
 	output [127:0] tag
 );
 	reg [11:0] icount;
-	reg [1791:0] mbit_r;
+	reg [1792:0] mbit_r;
 	reg ca_bitr, cb_bitr;
 	reg [292:0] state_pstr;
 	wire [292:0] state_nxtw;
