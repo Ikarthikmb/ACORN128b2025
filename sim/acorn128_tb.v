@@ -52,7 +52,6 @@ module acorn128_tb();
 		associated_data_in <= 'b0;
 		ciphertext_in <= 'b0;
 		#10;
-		$display("----------------------------------------------------------------------");
 		$display("[INFO] Pre Setup Completed");
 	end
 	endtask
@@ -97,7 +96,7 @@ module acorn128_tb();
 		#10; 
 		if (encrypt_i) begin
 			$display("[INFO] STARTING ENCRYPTION");
-			$display("[ECRP] Plain: %h", plaintext_in);
+			$display("[ECRP] Plain : %h", plaintext_in);
 		end else begin
 			$display("[INFO] STARTING DECRYPTION");
 			$display("[ECRP] Cipher: %h", plaintext_in);
@@ -121,8 +120,8 @@ module acorn128_tb();
 			
 			plaintext_r = ciphertext_out;
 			
-			$display("[DCRP] Plain: %h", plaintext_r);
-			$display("[DCRP] Tag: %h", tag_out);
+			$display("[DCRP] Plain : %h", plaintext_r);
+			$display("[DCRP] Tag   : %h", tag_out);
 		end
 
 	end
@@ -130,10 +129,12 @@ module acorn128_tb();
 
 	task verify_encryption;
 	begin
-		if (plaintext_r == ciphertext_r) begin
+		if (plaintext_in == plaintext_r) begin
 			$display("\n[INFO] Verification Success");
 		end else begin
 			$display("\n[ERROR] Verification Failed");
+			$display("[INFO] Expected Plaintext : ", plaintext_in);
+			$display("[INFO] Decrypted Plaintext: ", plaintext_r);
 		end
 	end
 	endtask
@@ -141,6 +142,7 @@ module acorn128_tb();
     initial begin
 		testcase_r <= 'd2;		// Change TESTCASE here
 
+		separation({60{"="}});
 		ground_zero();
 		@(posedge clk) rst <= 0;
 
@@ -152,6 +154,7 @@ module acorn128_tb();
 		@(posedge clk);
 		process_data(testcase_r, encrypt_in);
         
+		separation({80{"-"}});
 		// [PROCESS] Decryption
 		ground_zero();
 		@(posedge clk) rst <= 0;
@@ -162,9 +165,11 @@ module acorn128_tb();
 
 		process_data(testcase_r, 'b0 , ciphertext_r);
 
-		verify_encryption();
+		verify_encryption;
 
         #10 rst <= 1;
+		separation({60{"="}});
+
 		$finish;
     end
 
@@ -172,6 +177,12 @@ module acorn128_tb();
 		$dumpfile("acorn128_tb.vcd");
 		$dumpvars(0, acorn128_tb);
 	end
+
+	task separation(input [8*60:1] ch);
+	begin
+		$display("%s", ch);
+	end
+	endtask
 
 endmodule
 
