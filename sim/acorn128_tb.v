@@ -14,6 +14,7 @@ module acorn128_tb();
     reg [63:0] data_length_in;
     reg [127:0] ciphertext_r;
     reg [127:0] plaintext_r;
+    reg [127:0] pt_originalr;
 	reg [3:0] testcase_r;
 
     wire [127:0] ciphertext_out;
@@ -96,15 +97,16 @@ module acorn128_tb();
 		#10; 
 		if (encrypt_i) begin
 			$display("[INFO] STARTING ENCRYPTION");
-			$display("[ECRP] Plain : %h", plaintext_in);
+			$display("[INFO] Plain : %h", plaintext_in);
+			pt_originalr <= plaintext_in;
 		end else begin
 			$display("[INFO] STARTING DECRYPTION");
-			$display("[ECRP] Cipher: %h", plaintext_in);
+			$display("[INFO] Cipher: %h", plaintext_in);
 		end
 
-		$display("[ECRP] Key   : %h", key_in);
-		$display("[ECRP] IV    : %h", iv_in);
-		$display("[ECRP] AD    : %h", associated_data_in);
+		$display("[INFO] Key   : %h", key_in);
+		$display("[INFO] IV    : %h", iv_in);
+		$display("[INFO] AD    : %h", associated_data_in);
 
 		wait (ready_out);
 
@@ -113,15 +115,15 @@ module acorn128_tb();
 			
 			ciphertext_r = ciphertext_out;
 			
-			$display("[ECRP] Cipher: %h", ciphertext_r);
-			$display("[ECRP] Tag   : %h", tag_out);
+			$display("[INFO] Cipher: %h", ciphertext_r);
+			$display("[INFO] Tag   : %h", tag_out);
 		end else begin
 			$display("\n[INFO] DECRYPTION READY");
 			
 			plaintext_r = ciphertext_out;
 			
-			$display("[DCRP] Plain : %h", plaintext_r);
-			$display("[DCRP] Tag   : %h", tag_out);
+			$display("[INFO] Plain : %h", plaintext_r);
+			$display("[INFO] Tag   : %h", tag_out);
 		end
 
 	end
@@ -129,12 +131,12 @@ module acorn128_tb();
 
 	task verify_encryption;
 	begin
-		if (plaintext_in == plaintext_r) begin
+		if (pt_originalr == plaintext_r) begin
 			$display("\n[INFO] Verification Success");
 		end else begin
 			$display("\n[ERROR] Verification Failed");
-			$display("[INFO] Expected Plaintext : ", plaintext_in);
-			$display("[INFO] Decrypted Plaintext: ", plaintext_r);
+			$display("[ERROR] Expected Plaintext : %0h", pt_originalr);
+			$display("[ERROR] Decrypted Plaintext: %0h", plaintext_r);
 		end
 	end
 	endtask

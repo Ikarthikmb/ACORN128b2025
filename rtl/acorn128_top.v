@@ -78,8 +78,10 @@ module acorn128_top(
 						start_ppr <= 'b1;
 						if (~done_ipw) begin
 							$display("[ERROR] INITILIZATION INCOMPLETE");
-							$display("[I-ERR] counter: %0d", counter_r);
-							$display("[I-ERR] done_ipw: %0b", done_ipw);
+							if (debug) begin
+								dddisplay("counter: %0d", counter_r);
+								dddisplay("done_ipw: %0b", done_ipw);
+							end
 						end
 					end
                 end
@@ -161,11 +163,26 @@ module acorn128_top(
     assign ciphertext_out = ciphertext_w;
 	assign tag_out = tag;
 
-	task ddisplay(string str);
+	task ddisplay(input string text);
 		`ifdef DEBUG
-			$display("DEBUG: %s",str);
+			$display("[DEBUG] %s",text);
 		`endif
 	endtask
+
+	task dddisplay(input string text, input reg [2000:0] val);
+		`ifdef DEBUG
+			$display("[DEBUG] ",$sformatf(text, val));
+		`endif
+	endtask
+
+	reg debug = 1;
+	initial begin
+		`ifdef DEBUG
+			debug = 1;
+		`else
+			debug = 0;
+		`endif
+	end
 
 endmodule
 
