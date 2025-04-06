@@ -14,7 +14,8 @@ module state_update128(
 		if (rst) begin
 			state_reg <= 'b0;
 		end else begin
-			state_reg[292:290]	<= state_io[292:290];
+			state_reg[292] 		<= fout ^ mbit_in;
+			state_reg[291:290]	<= state_io[292:290];
 			state_reg[289] 		<= state_io[289] ^ state_io[235] ^ state_io[230];
 			state_reg[288:231]	<= state_io[288:231];
 			state_reg[230] 		<= state_io[230] ^ state_io[196] ^ state_io[193];
@@ -33,7 +34,6 @@ module state_update128(
 	ksg128 KSG128(.state_in(state_reg), .ks_out(ks_out));
 	fbk128 FBK128(.state_in(state_reg), .ca_in(ca_in), .cb_in(cb_in), .fout(fout));
 
+	assign sup128_out[292:1] 	= state_reg[291:0];
 	assign sup128_out[0] 		= state_reg[292];
-	assign sup128_out[291:1] 	= state_reg[290:0];
-	assign sup128_out[292] 		= fout ^ mbit_in;
 endmodule
