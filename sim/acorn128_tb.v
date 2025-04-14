@@ -11,9 +11,9 @@ module acorn128_tb();
     reg [127:0] plaintext_in;
     reg [127:0] ciphertext_in;
     reg [127:0] associated_data_in;
-    reg [63:0] data_length_in;
-    reg [127:0] ciphertext_r;
-    reg [127:0] plaintext_r;
+    reg [63:0] data_length_in = 'b0; 
+    reg [127:0] ciphertext_r = 'b0;
+    reg [127:0] plaintext_r = 'b0;
     reg [127:0] pt_originalr;
 	reg [3:0] testcase_r;
 
@@ -53,13 +53,22 @@ module acorn128_tb();
 		associated_data_in <= 'b0;
 		ciphertext_in <= 'b0;
 		#10;
-		$display("[INFO] Pre Setup Completed");
 	end
 	endtask
 
-	task process_data(input [3:0] testcase_i, input encrypt_i, input [127:0] cipher_in = 'h0);
+	task process_data(input [3:0] testcase_i, input encrypt_i = 1'b1, input [127:0] cipher_in = 'h0);
 	begin
 		case (testcase_i)
+			'd0: begin		// Testcase 1
+				key_in <= 128'h00000000000000000000000000000000;
+				iv_in <= 128'h00000000000000000000000000000000;
+				if (encrypt_i) begin
+					plaintext_in <= 128'h00000000000000000000000000000000;
+				end else begin
+					plaintext_in <= cipher_in;
+				end
+				associated_data_in <= 128'h00000000000000000000000000000000;
+			end
 			'd1: begin		// Testcase 1
 				key_in <= 128'h00112233445566778899AABBCCDDEEFF;
 				iv_in <= 128'h0123456789ABCDEF0123456789ABCDEF;
@@ -92,22 +101,35 @@ module acorn128_tb();
 				end
 				associated_data_in <= {16{8'b00000001}};
 			end
+
+			'd4: begin		// Testcase 4
+				key_in <= 128'hEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE;
+				iv_in <= 128'hFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+				if (encrypt_i) begin
+					plaintext_in <= 128'h66666666666666666666666666666666;
+				end else begin
+					plaintext_in <= cipher_in;
+				end
+				associated_data_in <= 128'h00000000000000000000000000000000;
+			end
 		endcase
 
-		#10; 
+		@(posedge clk)
 		if (encrypt_i) begin
-			$display("[INFO] STARTING ENCRYPTION");
+			$display("[INFO] STARTING ENCRYPTION ...");
 			$display("[INFO] Plain : %h", plaintext_in);
 			pt_originalr <= plaintext_in;
+			$display("[INFO] Key   : %h", key_in);
+			$display("[INFO] IV    : %h", iv_in);
+			$display("[INFO] AD    : %h", associated_data_in);
 		end else begin
-			$display("[INFO] STARTING DECRYPTION");
-			$display("[INFO] Cipher: %h", plaintext_in);
+			$display("[INFO] STARTING DECRYPTION ...");
+			$display("[INFO] Cipher : %h", plaintext_in);
 		end
 
-		$display("[INFO] Key   : %h", key_in);
-		$display("[INFO] IV    : %h", iv_in);
-		$display("[INFO] AD    : %h", associated_data_in);
 
+		@(posedge clk)
+		$display("[INFO] Waiting for READY ...");
 		wait (ready_out);
 
 		if (encrypt_i) begin
@@ -116,14 +138,14 @@ module acorn128_tb();
 			ciphertext_r = ciphertext_out;
 			
 			$display("[INFO] Cipher: %h", ciphertext_r);
-			$display("[INFO] Tag   : %h", tag_out);
+			$display("[INFO] Tag   : %h\n", tag_out);
 		end else begin
 			$display("\n[INFO] DECRYPTION READY");
 			
 			plaintext_r = ciphertext_out;
 			
 			$display("[INFO] Plain : %h", plaintext_r);
-			$display("[INFO] Tag   : %h", tag_out);
+			$display("[INFO] Tag   : %h\n", tag_out);
 		end
 
 	end
@@ -135,17 +157,19 @@ module acorn128_tb();
 			$display("\n[INFO] Verification Success");
 		end else begin
 			$display("\n[ERROR] Verification Failed");
-			$display("[ERROR] Expected Plaintext : %0h", pt_originalr);
-			$display("[ERROR] Decrypted Plaintext: %0h", plaintext_r);
+			$display("[ERROR] Expected Plaintext : %b", pt_originalr);
+			$display("[ERROR] Decrypted Plaintext: %b", plaintext_r);
 		end
 	end
 	endtask
 
     initial begin
-		testcase_r <= 'd2;		// Change TESTCASE here
+		testcase_r <= 'd4;		// Change TESTCASE here
 
 		separation({60{"="}});
 		ground_zero();
+		$display("[INFO] Pre Setup Completed");
+
 		@(posedge clk) rst <= 0;
 
 		@(posedge clk);
@@ -156,9 +180,10 @@ module acorn128_tb();
 		@(posedge clk);
 		process_data(testcase_r, encrypt_in);
         
-		separation({80{"-"}});
+		// separation({80{"-"}});
 		// [PROCESS] Decryption
 		ground_zero();
+		$display("[INFO] Reset Completed");
 		@(posedge clk) rst <= 0;
 
 		@(posedge clk);
