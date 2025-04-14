@@ -138,10 +138,8 @@ module acorn128_top(
 						ca_state_ir <= 1'b1;
 						cb_state_ir <= 1'b1;
 						mbit_state_ir <= 1'b0;
-                    end else if (counter_r == 12'd1408) begin
-						tag_r <= ks_outw;
-                    end else if (counter_r >= 12'd1409 & counter_r <= 12'd1535) begin
-						tag_r <= tag_r || ks_outw;
+                    end else if (counter_r >= 12'd1408 & counter_r <= 12'd1535) begin
+						tag_r[counter_r - 'd1408] <= tag_r[counter_r - 'd1408] | ks_outw;
                     end else if (counter_r == 'd1536) begin
                         ready_r <= 'b1;
                         start_sp <= 'b0;
@@ -196,7 +194,7 @@ module acorn128_top(
 		.ca_in(ca_state_ir),
 		.cb_in(cb_state_ir),
 		.fbk_in(fbk_outw),
-		.state_in((!start_sp)? state_pstr : state_nxtr),
+		.state_in(state_pstr),
 		.mbit_in(mbit_state_ir),
 		.sup128_out(state_nxtr)
 	);
@@ -207,7 +205,7 @@ module acorn128_top(
 	);
 
 	fbk128 FBK128(
-		.state_in((!start_sp)? state_pstr : state_nxtr),
+		.state_in(state_pstr),
 		.ca_in(ca_state_ir),
 		.cb_in(cb_state_ir),
 		.ks_in(ks_outw),
