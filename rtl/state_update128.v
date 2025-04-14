@@ -16,20 +16,19 @@ module state_update128(
 			state_reg <= 'b0;
 		end else begin
 			state_reg[292] 		<= fbk_in ^ mbit_in;
-			state_reg[291]	<= state_in[290];
-			state_reg[290] 		<= state_in[289] ^ state_in[235] ^ state_in[230];
-			state_reg[289:232]	<= state_in[288:231];
-			state_reg[231] 		<= state_in[230] ^ state_in[196] ^ state_in[193];
-			state_reg[230:195]	<= state_in[229:194];
-			state_reg[194] 		<= state_in[193] ^ state_in[160] ^ state_in[154];
-			state_reg[193:156]	<= state_in[192:155];
-			state_reg[155] 		<= state_in[154] ^ state_in[111] ^ state_in[107];
-			state_reg[154:109]	<= state_in[153:108];
-			state_reg[108] 		<= state_in[107] ^ state_in[66]  ^ state_in[61];
-			state_reg[107:63]	<= state_in[106:62];
-			state_reg[62] 		<= state_in[61]  ^ state_in[23]  ^ state_in[0];
-			state_reg[61:1]		<= state_in[60:0];
-			state_reg[0]	<= state_in[292];
+			state_reg[291:289] <= state_in[292:290];
+			state_reg[288] 	<= state_in[289] ^ state_in[235] ^ state_in[230];
+			state_reg[287:230] <= state_in[288:231];
+			state_reg[229] 	<= state_in[230] ^ state_in[196] ^ state_in[193];
+			state_reg[228:193] <= state_in[229:194];
+			state_reg[192] 	<= state_in[193] ^ state_in[160] ^ state_in[154];
+			state_reg[191:154] <= state_in[192:155];
+			state_reg[153] 	<= state_in[154] ^ state_in[111] ^ state_in[107];
+			state_reg[152:107] <= state_in[153:108];
+			state_reg[106] 	<= state_in[107] ^ state_in[66]  ^ state_in[61];
+			state_reg[105:61] <= state_in[106:62];
+			state_reg[60] 	<= state_in[61]  ^ state_in[23]  ^ state_in[0];
+			state_reg[59:0] <= state_in[60:1];
 		end
 	end
 
