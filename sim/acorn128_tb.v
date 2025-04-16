@@ -133,8 +133,8 @@ module acorn128_tb();
 			$display("\n[INFO] Verification Success");
 		end else begin
 			$display("\n[ERROR] Verification Failed");
-			$display("[INFO] Expected Plaintext : ", plaintext_in);
-			$display("[INFO] Decrypted Plaintext: ", plaintext_r);
+			$display("[INFO] Expected Plaintext : %0h", plaintext_in);
+			$display("[INFO] Decrypted Plaintext: %0h", plaintext_r);
 		end
 	end
 	endtask
