@@ -116,14 +116,14 @@ module acorn128_tb();
 
 			'd5: begin		// Testcase 5 using a string
 				str_en <= 1'b1;
-				key_in <= 128'hEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE;
-				iv_in <= 128'hFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+				key_in <= 128'h12312341234512345612345671234567;
+				iv_in <= 128'h11111111111111111111111111111111;
 				if (encrypt_i) begin
 					plaintext_in <= "Hello ACORN";
 				end else begin
 					plaintext_in <= cipher_in;
 				end
-				associated_data_in <= 128'h00000000000000000000000000000000;
+				associated_data_in <= 128'h44455556666677777788888883332222;
 			end
 		endcase
 
