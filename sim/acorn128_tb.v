@@ -16,6 +16,7 @@ module acorn128_tb();
     reg [127:0] plaintext_r = 'b0;
     reg [127:0] pt_originalr;
 	reg [3:0] testcase_r;
+	reg str_en = 1'b0;
 
     wire [127:0] ciphertext_out;
     wire [127:0] plaintext_out;
@@ -112,12 +113,28 @@ module acorn128_tb();
 				end
 				associated_data_in <= 128'h00000000000000000000000000000000;
 			end
+
+			'd5: begin		// Testcase 5 using a string
+				str_en <= 1'b1;
+				key_in <= 128'hEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE;
+				iv_in <= 128'hFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+				if (encrypt_i) begin
+					plaintext_in <= "Hello ACORN";
+				end else begin
+					plaintext_in <= cipher_in;
+				end
+				associated_data_in <= 128'h00000000000000000000000000000000;
+			end
 		endcase
 
 		@(posedge clk)
 		if (encrypt_i) begin
 			$display("[INFO] STARTING ENCRYPTION ...");
-			$display("[INFO] Plain : %h", plaintext_in);
+			if (str_en) begin
+				$display("[INFO] Plain : %s", plaintext_in);
+			end else begin
+				$display("[INFO] Plain : %h", plaintext_in);
+			end
 			pt_originalr <= plaintext_in;
 			$display("[INFO] Key   : %h", key_in);
 			$display("[INFO] IV    : %h", iv_in);
@@ -144,7 +161,12 @@ module acorn128_tb();
 			
 			plaintext_r = ciphertext_out;
 			
-			$display("[INFO] Plain : %h", plaintext_r);
+			if (str_en) begin
+				$display("[INFO] Plain : %s", plaintext_r);
+			end else begin
+				$display("[INFO] Plain : %h", plaintext_r);
+			end
+
 			$display("[INFO] Tag   : %h\n", tag_out);
 		end
 
@@ -164,7 +186,7 @@ module acorn128_tb();
 	endtask
 
     initial begin
-		testcase_r <= 'd4;		// Change TESTCASE here
+		testcase_r <= 'd5;		// Change TESTCASE here
 
 		separation({60{"="}});
 		ground_zero();
