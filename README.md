@@ -20,20 +20,25 @@ Authenticated Cipher with Optimal Randomness is a stream cipher that provides bo
 5. Verification
 
 
-### File Structure
+### File Structure:
 
 ```
 Makefile
-acorn128_top.v
-initialization.v
-associated_process.v
-encryption.v
-finalization.v
-state_update128.v
-ch_fn.v
-maj_fn.v
-fbk128.v
-ksg128.v
+
+# Verilog
+	acorn128_top.v
+	initialization.v
+	associated_process.v
+	encryption.v
+	finalization.v
+	state_update128.v
+	ch_fn.v
+	maj_fn.v
+	fbk128.v
+	ksg128.v
+
+# Testbench
+	acorn128_tb.v
 ```
 
 ## How To Run
@@ -46,4 +51,4 @@ make tb
 
 ## References
 
-[] https://competitions.cr.yp.to/round3/acornv3.pdf
+* https://competitions.cr.yp.to/round3/acornv3.pdf
