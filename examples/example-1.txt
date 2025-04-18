@@ -1,0 +1,30 @@
+iverilog -o sim/tb.out -g2012 rtl/associated_process.v rtl/encryption.v rtl/finalization.v rtl/ksg128.v rtl/state_update128.v rtl/acorn128_top.v rtl/ch_fn.v rtl/fbk128.v rtl/initialization.v rtl/maj_fn.v sim/acorn128_tb.v 
+vvp sim/tb.out
+============================================================
+VCD info: dumpfile acorn128_tb.vcd opened for output.
+[INFO] Pre Setup Completed
+[INFO] Waiting for START Signal ...
+[INFO] STARTING ENCRYPTION ...
+[INFO] Plain : 66666666666666666666666666666666
+[INFO] Key   : eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+[INFO] IV    : ffffffffffffffffffffffffffffffff
+[INFO] AD    : 00000000000000000000000000000000
+[INFO] Waiting for READY ...
+
+[INFO] ENCRYPTION READY
+[INFO] Cipher: fdfe805a2a19f80101a0007e791787f8
+[INFO] Tag   : 57c269fd9ebd8656c364ddee7ad7abc8
+
+[INFO] Reset Completed
+[INFO] Waiting for START Signal ...
+[INFO] STARTING DECRYPTION ...
+[INFO] Cipher : fdfe805a2a19f80101a0007e791787f8
+[INFO] Waiting for READY ...
+
+[INFO] DECRYPTION READY
+[INFO] Plain : 66666666666666666666666666666666
+[INFO] Tag   : 70c2ac8069b5f6a9d555fc71fe437611
+
+
+[INFO] Verification Success
+============================================================

@@ -1,0 +1,60 @@
+iverilog -o sim/tb.out -g2012 rtl/associated_process.v rtl/encryption.v rtl/finalization.v rtl/ksg128.v rtl/state_update128.v rtl/acorn128_top.v rtl/ch_fn.v rtl/fbk128.v rtl/initialization.v rtl/maj_fn.v sim/acorn128_tb.v 
+vvp sim/tb.out
+============================================================
+VCD info: dumpfile acorn128_tb.vcd opened for output.
+[INFO] Pre Setup Completed
+[INFO] Waiting for START Signal ...
+[INFO] STARTING ENCRYPTION ...
+[INFO] Plain :      Hello ACORN
+[INFO] Key   : 12312341234512345612345671234567
+[INFO] IV    : 11111111111111111111111111111111
+[INFO] AD    : 44455556666677777788888883332222
+[INFO] Waiting for READY ...
+
+[INFO] ENCRYPTION READY
+[INFO] Cipher: e3149613dac91e695cfd4ad04a698184
+[INFO] Tag   : be9a9b5aefb91e9fa18715f26d40684a
+
+[INFO] Reset Completed
+[INFO] Waiting for START Signal ...
+[INFO] STARTING DECRYPTION ...
+[INFO] Cipher : e3149613dac91e695cfd4ad04a698184
+[INFO] Waiting for READY ...
+
+[INFO] DECRYPTION READY
+[INFO] Plain :      Hello ACORN
+[INFO] Tag   : f8dcd2743cf0bd1f2477bef261055322
+
+
+[INFO] Verification Success
+============================================================
+iverilog -o sim/tb.out -g2012 rtl/associated_process.v rtl/encryption.v rtl/finalization.v rtl/ksg128.v rtl/state_update128.v rtl/acorn128_top.v rtl/ch_fn.v rtl/fbk128.v rtl/initialization.v rtl/maj_fn.v sim/acorn128_tb.v 
+vvp sim/tb.out
+============================================================
+VCD info: dumpfile acorn128_tb.vcd opened for output.
+[INFO] Pre Setup Completed
+[INFO] Waiting for START Signal ...
+[INFO] STARTING ENCRYPTION ...
+[INFO] Plain :      Hello ACORN
+[INFO] Key   : 12312341234512345612345671234567
+[INFO] IV    : 11111111111111111111111111111111
+[INFO] AD    : 44455556666677777788888883332222
+[INFO] Waiting for READY ...
+
+[INFO] ENCRYPTION READY
+[INFO] Cipher: e3149613dac91e695cfd4ad04a698184
+[INFO] Tag   : be9a9b5aefb91e9fa18715f26d40684a
+
+[INFO] Reset Completed
+[INFO] Waiting for START Signal ...
+[INFO] STARTING DECRYPTION ...
+[INFO] Cipher : e3149613dac91e695cfd4ad04a698184
+[INFO] Waiting for READY ...
+
+[INFO] DECRYPTION READY
+[INFO] Plain :      Hello ACORN
+[INFO] Tag   : f8dcd2743cf0bd1f2477bef261055322
+
+
+[INFO] Verification Success
+============================================================
