@@ -19,6 +19,7 @@ module acorn128_top(
 	wire ks_outw;
 	wire fbk_outw;
     reg	[127:0]	plaintext_r;
+    reg	[127:0]	plaintext_outr;
 	reg [11:0] counter_r;
 	reg [11:0] counter_er;
 	reg ready_r;
@@ -115,12 +116,14 @@ module acorn128_top(
                         phase_r <= ENCRYPTION_P;
                     end
                 end
+
                 ENCRYPTION_P: begin
                     if (counter_r >= 12'd384 & counter_r <= 12'd511) begin
 						ca_state_ir <= ca_ep_ow;
 						cb_state_ir <= cb_ep_ow;
 						mbit_state_ir <= mbit_ep_ow;
 						cipher_r[counter_r - 12'd384] <= plaintext_in[counter_r - 12'd384] ^ ks_outw;
+						// cipher_r[counter_r - 12'd384] <= plaintext_in[counter_r - 12'd384];
 					end else if (counter_r > 'd511 & counter_r <= 12'd766) begin
 						ca_state_ir <= ca_ep_ow;
 						cb_state_ir <= cb_ep_ow;
@@ -152,7 +155,7 @@ module acorn128_top(
             counter_r 	<= 'd1792;
             ready_r 	<= 'b0;
             phase_r 	<= WAITING_P;
-			$display("[INFO] Waiting for START Signal ...");
+			// $display("[INFO] Waiting for START Signal ...");
 		end
     end
 
@@ -212,9 +215,10 @@ module acorn128_top(
 		.fout(fbk_outw)
 	);
 
-	assign ready_out = ready_r;
-    assign ciphertext_out = cipher_r;
-	assign tag_out = tag_r;
+	assign ready_out 		= ready_r;
+	assign tag_out 			= tag_r;
+    assign ciphertext_out 	= encrypt_in ? cipher_r : 128'h0;
+    assign plaintext_out 	= encrypt_in ? 128'h0 : cipher_r;
 
 endmodule
 

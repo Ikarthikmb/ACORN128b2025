@@ -17,6 +17,9 @@ module acorn128_tb();
     reg [127:0] pt_originalr;
 	reg [3:0] testcase_r;
 	reg str_en = 1'b0;
+	reg vdisp = 1'b0;
+    reg [127:0] tag_en;
+    reg [127:0] tag_de;
 
     wire [127:0] ciphertext_out;
     wire [127:0] plaintext_out;
@@ -139,35 +142,40 @@ module acorn128_tb();
 			$display("[INFO] Key   : %h", key_in);
 			$display("[INFO] IV    : %h", iv_in);
 			$display("[INFO] AD    : %h", associated_data_in);
-		end else begin
+		end else if (vdisp) begin
 			$display("[INFO] STARTING DECRYPTION ...");
 			$display("[INFO] Cipher : %h", plaintext_in);
 		end
 
 
 		@(posedge clk)
-		$display("[INFO] Waiting for READY ...");
+		if (vdisp)
+			$display("[INFO] Waiting for READY ...");
 		wait (ready_out);
 
 		if (encrypt_i) begin
 			$display("\n[INFO] ENCRYPTION READY");
 			
 			ciphertext_r = ciphertext_out;
+			tag_en = tag_out;
 			
 			$display("[INFO] Cipher: %h", ciphertext_r);
 			$display("[INFO] Tag   : %h\n", tag_out);
 		end else begin
-			$display("\n[INFO] DECRYPTION READY");
+			if (vdisp)
+				$display("\n[INFO] DECRYPTION READY");
 			
 			plaintext_r = ciphertext_out;
+			tag_de = tag_out;
 			
-			if (str_en) begin
+			if (vdisp & str_en) begin
 				$display("[INFO] Plain : %s", plaintext_r);
-			end else begin
+			end else if (vdisp & ~str_en) begin
 				$display("[INFO] Plain : %h", plaintext_r);
 			end
 
-			$display("[INFO] Tag   : %h\n", tag_out);
+			if (vdisp)
+				$display("[INFO] Tag   : %h\n", tag_out);
 		end
 
 	end
@@ -175,18 +183,27 @@ module acorn128_tb();
 
 	task verify_encryption;
 	begin
+		if (tag_en == tag_de) begin
+			$display("\n[INFO] Tag Verified");
+		end else begin
+			$display("\n[ERROR] Tag Verification Failed");
+			$display("[ERROR] Expected tag : %h", tag_en);
+			$display("[ERROR] Expected tag : %h", tag_de);
+		end
+
 		if (pt_originalr == plaintext_r) begin
-			$display("\n[INFO] Verification Success");
+			$display("\n[INFO] Encryption Verified");
 		end else begin
 			$display("\n[ERROR] Verification Failed");
-			$display("[ERROR] Expected Plaintext : %b", pt_originalr);
-			$display("[ERROR] Decrypted Plaintext: %b", plaintext_r);
+			$display("[ERROR] Expected Plaintext : %h", pt_originalr);
+			$display("[ERROR] Decrypted Plaintext: %h", plaintext_r);
 		end
 	end
 	endtask
 
     initial begin
 		testcase_r <= 'd5;		// Change TESTCASE here
+		vdisp <= 1'b0;			// Enable verification information
 
 		separation({60{"="}});
 		ground_zero();
@@ -202,10 +219,14 @@ module acorn128_tb();
 		@(posedge clk);
 		process_data(testcase_r, encrypt_in);
         
+		// Cipher Verification
+		$display("[INFO] Cipher Verification ...");
+
 		// separation({80{"-"}});
 		// [PROCESS] Decryption
 		ground_zero();
-		$display("[INFO] Reset Completed");
+		if (vdisp)
+			$display("[INFO] Reset Completed");
 		@(posedge clk) rst <= 0;
 
 		@(posedge clk);

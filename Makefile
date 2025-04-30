@@ -16,3 +16,5 @@ fun:
 
 clean: 
 	rm *.out
+.PHONY:
+	clean tb
