@@ -9,29 +9,24 @@ module encryption(
 );
 
 	reg mbit_r;
+
 	always @(posedge clk or posedge rst) begin
 		if (rst) begin
 			mbit_r <= 1'b0;
 		end else if (count_ep >= 'd384 & count_ep <= 12'd511) begin
-			mbit_r <= plaintext_in['d511 - count_ep];
+			mbit_r <= plaintext_in[count_ep - 'd384];
+			// mbit_r <= plaintext_in['d511 - count_ep];
 		end else if (count_ep == 12'd512) begin
 			mbit_r <= 1'b1;
-		end else if (count_ep >= 12'd513) begin
+		end else if (count_ep >= 12'd513 & count_ep <= 12'd767) begin
 			mbit_r <= 1'b0;
 		end else begin
 			mbit_r <= 1'b0;
 		end
 	end
 
-	/*
-	assign mbit_out = rst ? 1'b0 : 
-							(count_ep >= 'd384 & count_ep <= 12'd511) ? plaintext_in['d511 - count_ep] :
-							(count_ep == 12'd512) ? 1'b1 : 
-							(count_ep >= 12'd513) ? 1'b0 :
-													1'b0 ;
-	*/
-
 	reg ca_r, cb_r;
+
 	always @(posedge clk or posedge rst) begin
 		if (rst) begin
 			ca_r 	<= 1'b0;
@@ -50,12 +45,6 @@ module encryption(
 		end
 	end
 
-	/*
-	ca_out 	= rst ? 1'b0 :
-							(count_ep <= 12'd639) ? 1'b1 :
-													1'b0 ;
-	cb_out 	= rst ? 1'b0 : 1'b0;
-	*/
 	assign mbit_out = mbit_r;
 	assign ca_out = ca_r;
 	assign cb_out = cb_r;

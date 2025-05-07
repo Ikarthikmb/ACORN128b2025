@@ -202,7 +202,7 @@ module acorn128_tb();
 	endtask
 
     initial begin
-		testcase_r <= 'd5;		// Change TESTCASE here
+		testcase_r <= 'd0;		// Change TESTCASE here
 		vdisp <= 1'b0;			// Enable verification information
 
 		separation({60{"="}});

@@ -24,14 +24,6 @@ module associated_process(
 
 	assign ca_out = (count_ap <= 'd255) ? 1'b1 : 1'b0;
 	assign cb_out = 1'b1;
-
-	/*
-	assign mbit_out = rst ? 1'b0 :
-							(count_ap <= 12'd127) ? ad_in[count_ap] :
-							(count_ap == 12'd128) ? 1'b1 :
-													1'b0 ;
-	*/
-
 	assign mbit_out = mbit_r;
 
 endmodule
