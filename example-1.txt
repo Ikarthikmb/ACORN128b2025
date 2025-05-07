@@ -3,34 +3,19 @@ vvp sim/tb.out
 ============================================================
 VCD info: dumpfile acorn128_tb.vcd opened for output.
 [INFO] Pre Setup Completed
-[INFO] STARTING ENCRYPTION
-[ECRP] Plain : 66666666666666666666666666666666
-[ECRP] Key   : eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-[ECRP] IV    : ffffffffffffffffffffffffffffffff
-[ECRP] AD    : ffffffffffffffffffffffffffffffff
-[ERROR] INITILIZATION INCOMPLETE
-[I-ERR] counter: 0
-[I-ERR] done_ipw: 0
+[INFO] STARTING ENCRYPTION ...
+[INFO] Plain :      Hello ACORN
+[INFO] Key   : 12312341234512345612345671234567
+[INFO] IV    : 11111111111111111111111111111111
+[INFO] AD    : 44455556666677777788888883332222
 
 [INFO] ENCRYPTION READY
-[ECRP] Cipher: 54a6ac18b2092bbc1788d5a54a12bb07
-[ECRP] Tag   : 75323e246076e3e2428be182b5ef020b
-------------------------------------------------------------
-[INFO] Pre Setup Completed
-[INFO] STARTING DECRYPTION
-[ECRP] Cipher: 54a6ac18b2092bbc1788d5a54a12bb07
-[ECRP] Key   : eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-[ECRP] IV    : ffffffffffffffffffffffffffffffff
-[ECRP] AD    : ffffffffffffffffffffffffffffffff
-[ERROR] INITILIZATION INCOMPLETE
-[I-ERR] counter: 0
-[I-ERR] done_ipw: 0
+[INFO] Cipher: 083ef7ae14e91f61a0d45393f274047c
+[INFO] Tag   : 85a34f3d62e97cc2cb097bad29e4c1e4
 
-[INFO] DECRYPTION READY
-[DCRP] Plain : 1655c761ed2dc1de82dcbfb5ee666666
-[DCRP] Tag   : 75323e246076e3e2428be182b5ef020b
+[INFO] Cipher Verification ...
 
-[ERROR] Verification Failed
-[INFO] Expected Plaintext : 112520563455476861751931319939792812807
-[INFO] Decrypted Plaintext:  29688405098289764629243399904518628966
+[INFO] Tag Verified
+
+[INFO] Encryption Verified
 ============================================================
