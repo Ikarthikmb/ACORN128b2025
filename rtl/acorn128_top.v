@@ -76,13 +76,6 @@ module acorn128_top(
 						counter_r <= 'd383;
 						start_ipr <= 'b0;
 						start_ppr <= 'b1;
-						if (~done_ipw) begin
-							$display("[ERROR] INITILIZATION INCOMPLETE");
-							if (debug) begin
-								dddisplay("counter: %0d", counter_r);
-								dddisplay("done_ipw: %0b", done_ipw);
-							end
-						end
 					end
                 end
                 PROCESSING_P: begin
