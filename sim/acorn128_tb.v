@@ -140,7 +140,7 @@ module acorn128_tb();
 	endtask
 
     initial begin
-		testcase_r <= 'd2;		// Change TESTCASE here
+		testcase_r <= 'd3;		// Change TESTCASE here
 
 		separation({60{"="}});
 		ground_zero();
