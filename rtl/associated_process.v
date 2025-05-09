@@ -22,10 +22,8 @@ module associated_process(
 			mbit_r <= 'b0;
 		end else if (icount < 'd128) begin
 			// LAB Problem: assign ADi to Mi here
-			// mbit_r[icount] <= 'b0;
+			mbit_r[icount] <= 'b0;
 
-			// LAB Solution
-			mbit_r[icount] <= ad_in[icount];
 		end else if (icount == 'd128) begin
 			mbit_r[icount] <= 1'b1;
 		end else if (icount > 'd128 & icount <= 'd255) begin

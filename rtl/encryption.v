@@ -84,10 +84,7 @@ module encryption(
 		end else if (icount >= 'd384 & icount <= 'd767) begin
 			// LAB Problem: Pi xor ksi
 			// Hint: count - 384 gives the location of Pi
-			// cipher_r[icount - 'd384] <= 'b0;
-
-			// LAB Solution
-			cipher_r[icount - 'd384] <= plaintext_in[icount - 'd384] ^  ks_out;
+			cipher_r[icount - 'd384] <= 'b0;
 		end
 	end
 
