@@ -14,12 +14,7 @@ module state_update128(
 		if (rst) begin
 			state_reg <= 'b0;
 		end else begin
-			// LAB Problem: Assign the xor of fi and Mi here
-			// state_reg[292] 		<= 'b0;
-			// LAB Solution
-			state_reg[292] 		<= fout ^ mbit_in;
-
-			state_reg[291:290]	<= state_io[291:290];
+			state_reg[292:290]	<= state_io[292:290];
 			state_reg[289] 		<= state_io[289] ^ state_io[235] ^ state_io[230];
 			state_reg[288:231]	<= state_io[288:231];
 			state_reg[230] 		<= state_io[230] ^ state_io[196] ^ state_io[193];
@@ -44,5 +39,10 @@ module state_update128(
 
 	// LAB Solution
 	assign sup128_out[291:0] = state_reg[292:1];
-	assign sup128_out[292] = state_reg[292];
+
+	// LAB Problem: Assign the xor of fi and Mi here
+	// assign sup128_out[292] = 'b0;
+
+	// LAB Solution
+	assign sup128_out[292] = fout ^ mbit_in;
 endmodule

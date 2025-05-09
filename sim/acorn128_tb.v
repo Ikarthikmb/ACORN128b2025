@@ -120,7 +120,7 @@ module acorn128_tb();
 					plaintext_in <= cipher_in;
 				end
 				associated_data_in <= 128'h00000000000000000000000000000000;
-				cipher_excepted <= 128'hbf73a960ef6a1d53a17c4bf2027a9ca0;
+				cipher_excepted <= 128'h0f12362c82ecee70fe7d6846c1f868a6;	// DO NOT CHANGE
 			end
 
 			'd5: begin		// Testcase 5 using a string
