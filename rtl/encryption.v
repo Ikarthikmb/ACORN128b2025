@@ -82,7 +82,7 @@ module encryption(
 		if (rst) begin
 			cipher_r <= 'b0;
 		end else if (icount >= 'd384 & icount <= 'd767) begin
-			// LAB Problem: Pi xor ksi
+			// LAB Problem-5: Pi xor ksi
 			// Hint: count - 384 gives the location of Pi
 			cipher_r[icount - 'd384] <= 'b0;
 		end

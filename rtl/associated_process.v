@@ -21,7 +21,7 @@ module associated_process(
 		if (rst) begin
 			mbit_r <= 'b0;
 		end else if (icount < 'd128) begin
-			// LAB Problem: assign ADi to Mi here
+			// LAB Problem-4: assign ADi to Mi here
 			mbit_r[icount] <= 'b0;
 
 		end else if (icount == 'd128) begin
