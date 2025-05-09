@@ -13,6 +13,7 @@ module acorn128_tb();
     reg [127:0] associated_data_in;
     reg [63:0] data_length_in = 'b0; 
     reg [127:0] ciphertext_r = 'b0;
+    reg [127:0] cipher_excepted = 'b0;
     reg [127:0] plaintext_r = 'b0;
     reg [127:0] pt_originalr;
 	reg [3:0] testcase_r;
@@ -72,6 +73,7 @@ module acorn128_tb();
 					plaintext_in <= cipher_in;
 				end
 				associated_data_in <= 128'h00000000000000000000000000000000;
+				cipher_excepted <= 128'h8e93b04c49e8b53884233957a6ead57c;
 			end
 			'd1: begin		// Testcase 1
 				key_in <= 128'h00112233445566778899AABBCCDDEEFF;
@@ -82,6 +84,7 @@ module acorn128_tb();
 					plaintext_in <= cipher_in;
 				end
 				associated_data_in <= 128'h11223344556677889900AABBCCDDEEFF;
+				cipher_excepted <= 128'h877393273d383817020cc38796cc9453;
 			end
 
 			'd2: begin		// Testcase 2
@@ -93,6 +96,7 @@ module acorn128_tb();
 					plaintext_in <= cipher_in;
 				end
 				associated_data_in <= 128'hFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
+				cipher_excepted <= 128'h91e4cfd0253835ade1b2d18903763fb6;
 			end
 
 			'd3: begin		// Testcase 3
@@ -104,6 +108,7 @@ module acorn128_tb();
 					plaintext_in <= cipher_in;
 				end
 				associated_data_in <= {16{8'b00000001}};
+				cipher_excepted <= 128'haa0cb19168936e55d314812e8c3a7e6a;
 			end
 
 			'd4: begin		// Testcase 4
@@ -115,6 +120,7 @@ module acorn128_tb();
 					plaintext_in <= cipher_in;
 				end
 				associated_data_in <= 128'h00000000000000000000000000000000;
+				cipher_excepted <= 128'hbf73a960ef6a1d53a17c4bf2027a9ca0;
 			end
 
 			'd5: begin		// Testcase 5 using a string
@@ -127,6 +133,7 @@ module acorn128_tb();
 					plaintext_in <= cipher_in;
 				end
 				associated_data_in <= 128'h44455556666677777788888883332222;
+				cipher_excepted <= 128'h083ef7ae14e91f61a0d45393f274047c;
 			end
 		endcase
 
@@ -160,7 +167,7 @@ module acorn128_tb();
 			tag_en = tag_out;
 			
 			$display("[INFO] Cipher: %h", ciphertext_r);
-			$display("[INFO] Tag   : %h\n", tag_out);
+			// $display("[INFO] Tag   : %h\n", tag_out);
 		end else begin
 			if (vdisp)
 				$display("\n[INFO] DECRYPTION READY");
@@ -184,25 +191,42 @@ module acorn128_tb();
 	task verify_encryption;
 	begin
 		if (tag_en == tag_de) begin
-			$display("\n[INFO] Tag Verified");
+			$display("[INFO] 1. Tag Verified");
 		end else begin
-			$display("\n[ERROR] Tag Verification Failed");
+			$display("[ERROR] Tag Verification Failed");
 			$display("[ERROR] Expected tag : %h", tag_en);
-			$display("[ERROR] Expected tag : %h", tag_de);
+			$display("[ERROR] Decryption tag : %h", tag_de);
 		end
 
 		if (pt_originalr == plaintext_r) begin
-			$display("\n[INFO] Encryption Verified");
+			$display("[INFO] 2. Encryption Verified");
 		end else begin
 			$display("\n[ERROR] Verification Failed");
+			if (testcase_r == 'd5) begin
+				$display("[ERROR] Expected Plaintext : %s", pt_originalr);
+				$display("[ERROR] Decrypted Plaintext: %s", plaintext_r);
+			end else begin
+				$display("[ERROR] Expected Plaintext : %h", pt_originalr);
+				$display("[ERROR] Decrypted Plaintext: %h", plaintext_r);
+			end
+		end
+
+		if (ciphertext_r == cipher_excepted) begin
+			$display("[INFO] 3. Lab Verified");
+		end else begin
+			$display("\n[ERROR] Lab Fail");
+			$display("[ERROR] Expected tag	: %h", tag_en);
+			$display("[ERROR] Decryption tag	: %h", tag_de);
 			$display("[ERROR] Expected Plaintext : %h", pt_originalr);
 			$display("[ERROR] Decrypted Plaintext: %h", plaintext_r);
+			$display("[ERROR] Lab Expected Ciphertext : %h", cipher_excepted);
+			$display("[ERROR] Lab Decrypted Ciphertext: %h", ciphertext_r);
 		end
 	end
 	endtask
 
     initial begin
-		testcase_r <= 'd5;		// Change TESTCASE here
+		testcase_r <= 'd4;		// Change TESTCASE here
 		vdisp <= 1'b0;			// Enable verification information
 
 		separation({60{"="}});
@@ -219,8 +243,8 @@ module acorn128_tb();
 		@(posedge clk);
 		process_data(testcase_r, encrypt_in);
         
-		// Cipher Verification
-		$display("[INFO] Cipher Verification ...");
+		// Authentication
+		$display("\n[INFO] Authentication");
 
 		// separation({80{"-"}});
 		// [PROCESS] Decryption

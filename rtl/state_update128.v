@@ -14,7 +14,11 @@ module state_update128(
 		if (rst) begin
 			state_reg <= 'b0;
 		end else begin
+			// LAB Problem: Assign the xor of fi and Mi here
+			// state_reg[292] 		<= 'b0;
+			// LAB Solution
 			state_reg[292] 		<= fout ^ mbit_in;
+
 			state_reg[291:290]	<= state_io[291:290];
 			state_reg[289] 		<= state_io[289] ^ state_io[235] ^ state_io[230];
 			state_reg[288:231]	<= state_io[288:231];
@@ -34,6 +38,11 @@ module state_update128(
 	ksg128 KSG128(.state_in(state_reg), .ks_out(ks_out));
 	fbk128 FBK128(.state_in(state_reg), .ca_in(ca_in), .cb_in(cb_in), .fout(fout));
 
-	assign sup128_out[291:0] 	= state_reg[292:1];
-	assign sup128_out[292] 		= state_reg[292];
+	// LAB Problem: Assign the xor of fi and Mi here
+	// assign sup128_out[291:0] = 'b0;
+	// assign sup128_out[292] = 'b0;
+
+	// LAB Solution
+	assign sup128_out[291:0] = state_reg[292:1];
+	assign sup128_out[292] = state_reg[292];
 endmodule
