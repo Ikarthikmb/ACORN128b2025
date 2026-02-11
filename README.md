@@ -5,10 +5,11 @@ The core of this repository is the ACORN-128, which is explicitly identified as 
 ACORN-128 is a lightweight authenticated encryption with associated data (AEAD) algorithm. It was a finalist in the CAESAR (Competition for Authenticated Encryption: Security, Applicability, and Robustness) competition and is specifically optimized for hardware efficiency, utilizing a bit-oriented stream cipher approach.
 
 The repository is organized into the following components:
-• rtl/: Contains the Verilog source code for the Register-Transfer Level (RTL) implementation of the cipher.
-• sim/: Contains simulation files and testbenches used to verify the design.
-• Makefile: A script used to automate the build and simulation processes.
-• example-1.txt: provides example test vectors or data for use during simulation
+
+- `rtl/`: Contains the Verilog source code for the Register-Transfer Level (RTL) implementation of the cipher.
+- `sim/`: Contains simulation files and testbenches used to verify the design.
+- `Makefile`: A script used to automate the build and simulation processes.
+- `example-1.txt`: provides example test vectors or data for use during simulation
 
 **Cipher Type**: Cryptographic Cipher ACORN-128
 
